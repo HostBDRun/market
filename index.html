@@ -5,36 +5,21 @@
 
 <noscript>JavaScript is required to convert the URL into a usable web page.</noscript>
 
-<!-- index.html -->
-
 <script type="text/javascript" src="b64.js"></script>
 <script type="text/javascript" src="api.js"></script>
 <script type="text/javascript">
-if (window.location.search) {
-  // Parse the query parameters from the URL
-  var queryParameters = new URLSearchParams(window.location.search);
-  var idParameter = queryParameters.get("id");
+if (window.location.hash) {
+  // Try to get page data from the URL if possible
+  var hash = window.location.hash.slice(1);
+  var data = b64.decode(hash);
 
-  if (idParameter) {
-    // You have the "id" parameter, you can use it here, for example:
-    var hashFragment = idParameter;  // Use the id as the hash fragment
-
-    // Proceed with rendering content using the hash fragment
-    var data = b64.decode(hashFragment);
-    try {
-      var urlDataObject = JSON.parse(data);
-      var api = apiVersions[urlDataObject.version];
-      document.write(api.decode(urlDataObject));
-    } catch (err) {
-      document.write(decodeURIComponent(data));
-    }
-  } else {
-    // Handle case when "id" parameter is missing
-    document.write("Missing 'id' parameter");
+  try {
+    var urlDataObject = JSON.parse(data);
+    var api = apiVersions[urlDataObject.version];
+    document.write(api.decode(urlDataObject));
+  } catch (err) {
+    document.write(decodeURIComponent(data));
   }
-} else if (window.location.hash) {
-  // Handle case when no query parameters, but hash fragment is present
-  // Existing code for hash fragment handling
 } else {
   // Otherwise redirect to the editor
   window.location.replace("./editor");
